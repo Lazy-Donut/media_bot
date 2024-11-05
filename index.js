@@ -1,8 +1,10 @@
 require('dotenv').config();
-const {Bot, GrammyError, HttpError} = require('grammy');
+const {Bot, GrammyError, HttpError, Keyboard} = require('grammy');
 const sequelize = require('./db')
 const bot = new Bot(process.env.BOT_API_KEY);
-const TokenModel = require('./model')
+const {processToken, authorizationCheck, create, nameSearch} = require('./src/services')
+
+const chats = {};
 
 const start = async () => {
     try {
@@ -18,22 +20,49 @@ const start = async () => {
     ])
 
     bot.command('start', async (ctx) => {
-        await ctx.reply('Привет, новый пользователь! Введи токен для дальнейшей работы со мной.')
-    }) //приветственное сообщение при первом контакте с ботом
+        if (await authorizationCheck(ctx)) {
+            const keyboard = new Keyboard()
+                .text('Поиск по имени')
+                .text('Поиск по названию СМИ')
+                .row()
+                .text('Поиск по виду СМИ')
+                .text('Добавить новый контакт журналиста')
+                .row()
+                .text('Отправить сообщение модератору')
+                .resized()
+
+            await ctx.reply(`Привет, ${ctx.from.first_name}! Можно приступать к работе.`, {reply_markup: keyboard})
+        }
+    })//приветственное сообщение при первом контакте с ботом
 
     bot.command('help', async (ctx) => {
         await ctx.reply('Используйте /start для начала работы с ботом.')
     }) //справочное сообщение при вводе /help
 
-    bot.on(":text", async (ctx) => {
-        const token = await TokenModel.findOne({where: {token: ctx.message.text}});
-        if (token === null) {
-            await ctx.reply('Введен неверный токен');
-        } else {
-            await ctx.reply('Пользователь авторизован')
-            token.destroy  ()
+    bot.hears('Поиск по имени', async (ctx) => {
+        if (await authorizationCheck(ctx) === true) {
+            chats[ctx.chatId] = 'name_search';
+            await ctx.reply('Введите имя журналиста для поиска')
         }
-    });
+    })
+
+    bot.command('create', async (ctx) => {
+        chats[ctx.chatId] = 'creating'
+        console.log(chats)
+        await create(ctx)
+    })
+
+    bot.on(":text", async (ctx) => {
+            switch (chats[ctx.chatId]) {
+                case 'name_search':
+                    nameSearch(ctx);
+                    break;
+                case undefined:
+                    processToken(ctx);
+                    break;
+            }
+        }
+    );
 
     bot.catch((err) => {
         const ctx = err.ctx;

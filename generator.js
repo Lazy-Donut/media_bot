@@ -1,6 +1,6 @@
 const MD5 = require('crypto-js/md5')
 const sequelize = require('./db')
-const TokenModel = require('./model')
+const { TokenModel } = require('./model')
 
 const generateNumber = (min = 0, length) => Math.floor(Math.random() * (length - min + 1)) + min;
 

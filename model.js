@@ -6,4 +6,27 @@ const TokenModel = Sequelize.define('token', {
     token: {type: DataTypes.STRING, unique: true},
 })
 
-module.exports = TokenModel;
+const UserModel = Sequelize.define('user', {
+    first_name: {type: DataTypes.STRING, allowNull: true},
+    last_name: {type: DataTypes.STRING, allowNull: true},
+    id: {type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true},
+    telegram_id: {type: DataTypes.INTEGER, unique: true},
+    username: {type: DataTypes.STRING, allowNull: true},
+})
+
+const ContactModel = Sequelize.define('contact', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true},
+    media: {type: DataTypes.STRING, allowNull: true},
+    first_name: {type: DataTypes.STRING, allowNull: false},
+    last_name: {type: DataTypes.STRING, allowNull: true},
+    media_type: {type: DataTypes.STRING, allowNull: true},
+    telegram_username: {type: DataTypes.STRING, allowNull: true},
+    email: {type: DataTypes.STRING, allowNull: true},
+    phone_number: {type: DataTypes.STRING, allowNull: true},
+    social_media_link: {type: DataTypes.STRING, allowNull: true},
+})
+
+UserModel.hasMany(ContactModel);
+ContactModel.belongsTo(UserModel);
+
+module.exports = { TokenModel, UserModel, ContactModel };
