@@ -2,16 +2,11 @@ require('dotenv').config();
 const {Bot, GrammyError, HttpError, Keyboard} = require('grammy');
 const sequelize = require('./db')
 const bot = new Bot(process.env.BOT_API_KEY);
-const {
-    processToken,
-    create,
-    nameSearch,
-    authorizationCheck,
-    mediaSearch,
-    mediaTypeSearch,
-    newContactMessage
-} = require('./src/services')
-const {startMessage, helpMessage} = require('./src/msgs')
+const {processToken} = require('./src/services')
+const {nameSearch, mediaSearch, mediaTypeSearch} = require('./src/search')
+const {helpMessage} = require('./src/msgs')
+const {create, newContactMessage} = require('./src/contact-creation')
+const {authorizationCheck} = require('./src/authorization')
 
 const chats = {};
 
@@ -60,21 +55,21 @@ const start = async () => {
     bot.hears('Поиск по имени журналиста', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'name_search';
-            await ctx.reply('Введите имя журналиста для поиска')
+            await ctx.reply('Введи имя журналиста для поиска')
         }
     })
 
     bot.hears('Поиск по названию СМИ', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'media_search';
-            await ctx.reply('Введите название СМИ для поиска')
+            await ctx.reply('Введи название СМИ для поиска')
         }
     })
 
     bot.hears('Поиск по виду СМИ', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'media_type_search';
-            await ctx.reply('Введите вид СМИ для поиска')
+            await ctx.reply('Введи вид СМИ для поиска')
         }
     })
 
@@ -86,7 +81,6 @@ const start = async () => {
             newContacts[ctx.chatId] = {};
         }
     })
-
 
     bot.command('create', async (ctx) => {
         chats[ctx.chatId] = 'creating'

@@ -29,4 +29,4 @@ const ContactModel = Sequelize.define('contact', {
 UserModel.hasMany(ContactModel);
 ContactModel.belongsTo(UserModel);
 
-module.exports = { TokenModel, UserModel, ContactModel };
+module.exports = {TokenModel, UserModel, ContactModel};
