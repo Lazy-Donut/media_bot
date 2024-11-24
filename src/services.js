@@ -93,7 +93,7 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'media_type';
             break;
         case 'media_type':
-            message = 'Введите ссылку профиль журналиста в соцсетях:
+            message = 'Введите ссылку профиль журналиста в соцсетях'
             nextMode = 'social_media_link';
             break;
         case 'social_media_link':
