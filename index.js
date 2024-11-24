@@ -2,7 +2,8 @@ require('dotenv').config();
 const {Bot, GrammyError, HttpError, Keyboard} = require('grammy');
 const sequelize = require('./db')
 const bot = new Bot(process.env.BOT_API_KEY);
-const {processToken, authorizationCheck, create, nameSearch} = require('./src/services')
+const {processToken, create, nameSearch, authorizationCheck} = require('./src/services')
+const {startMessage, helpMessage} = require('./src/msgs')
 
 const chats = {};
 
@@ -16,13 +17,14 @@ const start = async () => {
 
     bot.api.setMyCommands([
         {command: 'start', description: 'Запуск бота'},
-        {command: 'help', description: 'Получить справку'}
+        {command: 'help', description: 'Получить справку'},
+
     ])
 
     bot.command('start', async (ctx) => {
         if (await authorizationCheck(ctx)) {
             const keyboard = new Keyboard()
-                .text('Поиск по имени')
+                .text('Поиск по имени журналиста')
                 .text('Поиск по названию СМИ')
                 .row()
                 .text('Поиск по виду СМИ')
@@ -31,12 +33,14 @@ const start = async () => {
                 .text('Отправить сообщение модератору')
                 .resized()
 
-            await ctx.reply(`Привет, ${ctx.from.first_name}! Можно приступать к работе.`, {reply_markup: keyboard})
+            await ctx.reply((`Привет, ${ctx.from.first_name}! Можно приступать к работе.`, {reply_markup: keyboard}))
         }
-    })//приветственное сообщение при первом контакте с ботом
+    })//приветственное сообщение при первом контакте с ботом после авторизации
 
     bot.command('help', async (ctx) => {
-        await ctx.reply('Используйте /start для начала работы с ботом.')
+        if (await authorizationCheck(ctx)) {
+            await ctx.reply((helpMessage), {parse_mode: "HTML"})
+        }
     }) //справочное сообщение при вводе /help
 
     bot.hears('Поиск по имени', async (ctx) => {
@@ -58,7 +62,7 @@ const start = async () => {
                     nameSearch(ctx);
                     break;
                 case undefined:
-                    processToken(ctx);
+                    await authorizationCheck(ctx, false) === true ? await ctx.reply('Выберите пункт меню для дальнейшей работы') : processToken(ctx);
                     break;
             }
         }

@@ -2,11 +2,12 @@ require('dotenv').config();
 const {TokenModel, UserModel, ContactModel} = require('../model')
 //const {Bot, GrammyError, HttpError, Keyboard} = require('grammy');
 const sequelize = require('../db')
+const {firstMessage, startMessage} = require('./msgs')
 
-const authorizationCheck = async (ctx) => {
+const authorizationCheck = async (ctx, withMessage = true) => {
     const user = await UserModel.findOne({where: {telegram_id: ctx.from.id}});
-    if (user === null) {
-        await ctx.reply('Привет, новый пользователь! Введи токен для дальнейшей работы со мной.')
+    if (user === null && withMessage) {
+        await ctx.reply((startMessage), { parse_mode: "HTML" })
     }
     return user !== null;
 }
@@ -50,12 +51,10 @@ const create = async (ctx) => {
 const nameSearch = async (ctx) => {
     const searchString = ctx.msg.text
     const query = 'SELECT * FROM contacts WHERE CONCAT(first_name, " ", last_name) like "%' + searchString + '%"';
-    //console.log(query)
     const contacts = await sequelize.query(query, {
         model: ContactModel,
         mapToModel: true, // pass true here if you have any mapped fields
     });
-    //console.log(contacts)
 
     contacts.forEach((contact) =>
         ctx.reply((
@@ -64,4 +63,4 @@ const nameSearch = async (ctx) => {
 }
 
 
-module.exports = {processToken, authorizationCheck, create, nameSearch};
+module.exports = {processToken, create, authorizationCheck, nameSearch};
