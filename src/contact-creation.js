@@ -1,11 +1,13 @@
 const {ContactModel, UserModel} = require("../model");
-const {Keyboard} = require("grammy");
 const {authorizationCheck} = require('./authorization')
+const {passInput, mainKeyboard} = require('./keyboards')
 
 const create = async (ctx, contactData) => {
     Object.keys(contactData).forEach(key => {
         if (contactData[key] === 'Пропустить ввод') {
             contactData[key] = null
+        } else if (contactData[key][0] === contactData[key][0].toLowerCase()) {
+            contactData[key] = contactData[key].charAt(0).toUpperCase() + contactData[key].slice(1)
         }
     })
     if (await authorizationCheck(ctx) === true) {
@@ -13,7 +15,7 @@ const create = async (ctx, contactData) => {
         const user = await UserModel.findOne({where: {telegram_id: ctx.from.id}});
         contact.setUser(user)
         contact.save()
-        await ctx.reply('Новая запись создана', {reply_markup: {remove_keyboard: true}})
+        await ctx.reply('Новая запись создана', {reply_markup: mainKeyboard()})
     }
 }
 
@@ -58,11 +60,8 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'done'
             break;
     }
-    const keyboard = new Keyboard()
-        .text('Пропустить ввод')
-        .resized()
 
-    await ctx.reply(message, nextMode === 'first_name' ? {} : {reply_markup: keyboard})
+    await ctx.reply(message, nextMode === 'first_name' ? {} : {reply_markup: passInput()})
     return nextMode;
 }
 

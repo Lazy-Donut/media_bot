@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {Bot, GrammyError, HttpError, Keyboard} = require('grammy');
+const {Bot, GrammyError, HttpError} = require('grammy');
 const sequelize = require('./db')
 const bot = new Bot(process.env.BOT_API_KEY);
 const {processToken} = require('./src/services')
@@ -7,6 +7,9 @@ const {nameSearch, mediaSearch, mediaTypeSearch} = require('./src/search')
 const {helpMessage} = require('./src/msgs')
 const {create, newContactMessage} = require('./src/contact-creation')
 const {authorizationCheck} = require('./src/authorization')
+const {mainKeyboard} = require('./src/keyboards')
+const {sendMessage} = require('./src/moderator-message')
+const {exportToCsv} = require('./src/export-to-csv')
 
 const chats = {};
 
@@ -25,26 +28,20 @@ const start = async () => {
     bot.api.setMyCommands([
         {command: 'start', description: 'Запуск бота'},
         {command: 'help', description: 'Получить справку'},
-
     ])
 
     bot.command('start', async (ctx) => {
         if (await authorizationCheck(ctx)) {
             chats[ctx.chatId] = undefined;
-            const keyboard = new Keyboard()
-                .text('Поиск по имени журналиста')
-                .text('Поиск по названию СМИ')
-                .row()
-                .text('Поиск по виду СМИ')
-                .text('Добавить новый контакт журналиста')
-                .row()
-                .text('Отправить сообщение модератору')
-                .resized()
 
             await ctx.reply(`Привет, ${ctx.from.first_name}!`, {reply_markup: {remove_keyboard: true}})
-            await ctx.reply(`Можно приступать к работе.`, {reply_markup: keyboard})
+            await ctx.reply(`Можно приступать к работе.`, {reply_markup: mainKeyboard()})
         }
     })//приветственное сообщение при первом контакте с ботом после авторизации
+
+    bot.command('export', async (ctx) => {
+        await exportToCsv(ctx)
+    })
 
     bot.command('help', async (ctx) => {
         if (await authorizationCheck(ctx)) {
@@ -82,9 +79,11 @@ const start = async () => {
         }
     })
 
-    bot.command('create', async (ctx) => {
-        chats[ctx.chatId] = 'creating'
-        await create(ctx)
+    bot.hears('Отправить сообщение модератору', async (ctx) => {
+        if (await authorizationCheck(ctx) === true) {
+            chats[ctx.chatId] = 'moderator_message';
+            await ctx.reply('Введи текст сообщения')
+        }
     })
 
     bot.on(":text", async (ctx) => {
@@ -97,6 +96,9 @@ const start = async () => {
                     break;
                 case'media_type_search':
                     mediaTypeSearch(ctx);
+                    break;
+                case 'moderator_message':
+                    sendMessage(ctx);
                     break;
                 case 'new_contact':
                     const mode = contactModes[ctx.chatId]

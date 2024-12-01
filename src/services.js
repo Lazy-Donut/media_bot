@@ -4,6 +4,8 @@ const sequelize = require('../db')
 const {nameSearch, mediaSearch, mediaTypeSearch} = require('./search')
 const {create, newContactMessage} = require('./contact-creation')
 const {authorizationCheck} = require('./authorization')
+const { Parser } = require('@json2csv/plainjs');
+const fs = require('node:fs');
 
 const processToken = async (ctx) => {
     const token = await TokenModel.findOne({where: {token: ctx.message.text}});
@@ -21,6 +23,27 @@ const processToken = async (ctx) => {
         await ctx.reply(`Привет, ${user.first_name}! Ваш ID: ${user.telegram_id}`)
     }
 }
+const exportToCsv = async (ctx) => {
+    if (ctx.from.id == process.env.MODERATOR_TG_ID) {
+        console.log('started export');
+        const contacts = await ContactModel.findAll();
+        const parser = new Parser({
+            fields: ['media', 'first_name', 'last_name'],
+            header: ['СМИ', 'Имя', 'Фамилия'],
+        });
+        const csv = parser.parse(contacts);
+        console.log(csv);
+        fs.writeFile('1.csv', csv, err => {
+            if (err) {
+                console.error(err);
+            } else {
+                // file written successfully
+            }
+        });
+        await ctx.replyWithPhoto(new InputFile("/tmp/picture.jpg"));
+
+    }
+}
 
 module.exports = {
     processToken,
@@ -29,5 +52,5 @@ module.exports = {
     nameSearch,
     mediaSearch,
     mediaTypeSearch,
-    newContactMessage
+    newContactMessage,
 };
