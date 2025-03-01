@@ -26,6 +26,7 @@ const ContactModel = Sequelize.define('contact', {
     social_media_link: {type: DataTypes.STRING, allowNull: true},
     telegram_username: {type: DataTypes.STRING, allowNull: true},
     specialization: {type: DataTypes.STRING, allowNull: true},
+    notes: {type: DataTypes.STRING, allowNull: true},
 })
 
 const ModeratorMessage = Sequelize.define('moderator_message', {

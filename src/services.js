@@ -6,13 +6,14 @@ const {create, newContactMessage} = require('./contact-creation')
 const {authorizationCheck} = require('./authorization')
 const { Parser } = require('@json2csv/plainjs');
 const fs = require('node:fs');
+const {mainKeyboard} = require("./keyboards");
 
 const processToken = async (ctx) => {
     const token = await TokenModel.findOne({where: {token: ctx.message.text}});
     if (token === null) {
         await ctx.reply('Введен неверный токен');
     } else {
-        await ctx.reply('Пользователь авторизован')
+        await ctx.reply('Пользователь авторизован', {reply_markup: mainKeyboard()})
         token.destroy()
         const user = await UserModel.create({
             first_name: ctx.from.first_name,
@@ -25,14 +26,12 @@ const processToken = async (ctx) => {
 }
 const exportToCsv = async (ctx) => {
     if (ctx.from.id == process.env.MODERATOR_TG_ID) {
-        console.log('started export');
         const contacts = await ContactModel.findAll();
         const parser = new Parser({
             fields: ['media', 'first_name', 'last_name'],
             header: ['СМИ', 'Имя', 'Фамилия'],
         });
         const csv = parser.parse(contacts);
-        console.log(csv);
         fs.writeFile('1.csv', csv, err => {
             if (err) {
                 console.error(err);

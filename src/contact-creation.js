@@ -57,9 +57,13 @@ const newContactMessage = async (ctx, mode = null) => {
             break;
         case 'phone_number':
             message = 'Введи контакт журналиста в телеграме'
-            nextMode = 'telegram_username'
+            nextMode = 'telegram_username';
             break;
         case 'telegram_username':
+            message = 'Введи дополнительную информацию'
+            nextMode = 'notes'
+            break;
+        case 'notes':
             message = 'Данные введены успешно'
             nextMode = 'done'
             break;

@@ -114,7 +114,7 @@ const start = async () => {
                     const mode = contactModes[ctx.chatId]
                     newContacts[ctx.chatId][mode] = ctx.msg.text;
                     contactModes[ctx.chatId] = await newContactMessage(ctx, mode)
-                    if (mode === 'telegram_username') {
+                    if (mode === 'notes') {
                         await create(ctx, newContacts[ctx.chatId])
                         chats[ctx.chatId] = undefined;
                         contactModes[ctx.chatId] = undefined;

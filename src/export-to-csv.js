@@ -6,10 +6,7 @@ const {InputFile} = require("grammy");
 
 
 const exportToCsv = async (ctx) => {
-    console.log(ctx.from.id);
-    console.log(process.env.MODERATOR_TG_ID)
     if (ctx.from.id == process.env.MODERATOR_TG_ID) {
-        console.log('started export');
         const contacts = await ContactModel.findAll();
         const parser = new Parser({
             fields: [
@@ -21,11 +18,11 @@ const exportToCsv = async (ctx) => {
                 'telegram_username',
                 'email',
                 'phone_number',
-                'social_media_link'
+                'social_media_link',
+                'notes',
             ],
         });
         const csv = parser.parse(contacts);
-        console.log(csv);
         fs.writeFile('../export.csv', csv, err => {
             if (err) {
                 console.error(err);
