@@ -24,19 +24,19 @@ const newContactMessage = async (ctx, mode = null) => {
     let nextMode = null
     switch (mode) {
         case null:
-            message = 'Введите имя журналиста'
+            message = 'Введи имя журналиста'
             nextMode = 'first_name';
             break;
         case 'first_name':
-            message = 'Введите фамилию журналиста'
+            message = 'Введи фамилию журналиста'
             nextMode = 'last_name';
             break;
         case 'last_name':
-            message = 'Введите название СМИ'
+            message = 'Введи название СМИ'
             nextMode = 'media';
             break;
         case 'media':
-            message = 'Введите вид СМИ (например, деловые, лайфстайл)'
+            message = 'Введи вид СМИ (например, деловые, лайфстайл)'
             nextMode = 'media_type';
             break;
         case 'media_type':
