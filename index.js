@@ -35,7 +35,7 @@ const start = async () => {
             chats[ctx.chatId] = undefined;
 
             await ctx.reply(`Привет, ${ctx.from.first_name}!`, {reply_markup: {remove_keyboard: true}})
-            await ctx.reply(`Можно приступать к работе.`, {reply_markup: mainKeyboard()})
+            await ctx.reply(`Можно приступать к работе`, {reply_markup: mainKeyboard()})
         }
     })//приветственное сообщение при первом контакте с ботом после авторизации
 

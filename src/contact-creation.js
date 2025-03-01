@@ -40,19 +40,19 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'media_type';
             break;
         case 'media_type':
-            message = 'Введите ссылку профиль журналиста в соцсетях'
+            message = 'Введи ссылку профиль журналиста в соцсетях'
             nextMode = 'social_media_link';
             break;
         case 'social_media_link':
-            message = 'Введите email журналиста'
+            message = 'Введи email журналиста'
             nextMode = 'email';
             break;
         case 'email':
-            message = 'Введите номер телефона журналиста'
+            message = 'Введи номер телефона журналиста'
             nextMode = 'phone_number';
             break;
         case 'phone_number':
-            message = 'Введите контакт журналиста в телеграме'
+            message = 'Введи контакт журналиста в телеграме'
             nextMode = 'telegram_username'
             break
         case 'telegram_username':
