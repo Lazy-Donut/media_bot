@@ -3,7 +3,7 @@ const {Bot, GrammyError, HttpError} = require('grammy');
 const sequelize = require('./db')
 const bot = new Bot(process.env.BOT_API_KEY);
 const {processToken} = require('./src/services')
-const {nameSearch, mediaSearch, mediaTypeSearch} = require('./src/search')
+const {nameSearch, mediaSearch, mediaTypeSearch, specializationSearch} = require('./src/search')
 const {helpMessage} = require('./src/msgs')
 const {create, newContactMessage} = require('./src/contact-creation')
 const {authorizationCheck} = require('./src/authorization')
@@ -63,10 +63,10 @@ const start = async () => {
         }
     })
 
-    bot.hears('Поиск по виду СМИ', async (ctx) => {
+    bot.hears('Поиск по типу СМИ', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'media_type_search';
-            await ctx.reply('Введи вид СМИ для поиска')
+            await ctx.reply('Введи тип СМИ для поиска')
         }
     })
 
@@ -76,6 +76,13 @@ const start = async () => {
             chats[ctx.chatId] = 'new_contact';
             contactModes[ctx.chatId] = await newContactMessage(ctx)
             newContacts[ctx.chatId] = {};
+        }
+    })
+
+    bot.hears('Поиск по специализации журналиста', async (ctx) => {
+        if (await authorizationCheck(ctx) === true) {
+            chats[ctx.chatId] = 'specialization_search';
+            await ctx.reply('Введи специализацию журналиста')
         }
     })
 
@@ -100,6 +107,9 @@ const start = async () => {
                 case 'moderator_message':
                     sendMessage(ctx);
                     break;
+                case 'specialization_search':
+                    specializationSearch(ctx);
+                    break;
                 case 'new_contact':
                     const mode = contactModes[ctx.chatId]
                     newContacts[ctx.chatId][mode] = ctx.msg.text;
@@ -112,7 +122,7 @@ const start = async () => {
                     }
                     break;
                 case undefined:
-                    await authorizationCheck(ctx, false) === true ? await ctx.reply('Выберите пункт меню для дальнейшей работы') : processToken(ctx);
+                    await authorizationCheck(ctx, false) === true ? await ctx.reply('Выбери пункт меню для дальнейшей работы') : processToken(ctx);
                     break;
             }
         }

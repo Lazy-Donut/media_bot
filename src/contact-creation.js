@@ -36,11 +36,15 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'media';
             break;
         case 'media':
-            message = 'Введи вид СМИ (например, деловые, лайфстайл)'
+            message = 'Введи тип СМИ (например, деловые, лайфстайл)'
             nextMode = 'media_type';
             break;
         case 'media_type':
-            message = 'Введи ссылку профиль журналиста в соцсетях'
+            message = 'Введи специализацию журналиста'
+            nextMode = 'specialization';
+            break;
+        case 'specialization':
+            message = 'Введи ссылку на профиль журналиста в соцсетях'
             nextMode = 'social_media_link';
             break;
         case 'social_media_link':
@@ -54,7 +58,7 @@ const newContactMessage = async (ctx, mode = null) => {
         case 'phone_number':
             message = 'Введи контакт журналиста в телеграме'
             nextMode = 'telegram_username'
-            break
+            break;
         case 'telegram_username':
             message = 'Данные введены успешно'
             nextMode = 'done'

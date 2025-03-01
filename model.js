@@ -21,10 +21,11 @@ const ContactModel = Sequelize.define('contact', {
     first_name: {type: DataTypes.STRING, allowNull: false},
     last_name: {type: DataTypes.STRING, allowNull: true},
     media_type: {type: DataTypes.STRING, allowNull: true},
-    telegram_username: {type: DataTypes.STRING, allowNull: true},
     email: {type: DataTypes.STRING, allowNull: true},
     phone_number: {type: DataTypes.STRING, allowNull: true},
     social_media_link: {type: DataTypes.STRING, allowNull: true},
+    telegram_username: {type: DataTypes.STRING, allowNull: true},
+    specialization: {type: DataTypes.STRING, allowNull: true},
 })
 
 const ModeratorMessage = Sequelize.define('moderator_message', {

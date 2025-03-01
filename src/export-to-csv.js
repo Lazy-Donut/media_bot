@@ -17,6 +17,7 @@ const exportToCsv = async (ctx) => {
                 'first_name',
                 'last_name',
                 'media_type',
+                'specialization',
                 'telegram_username',
                 'email',
                 'phone_number',
