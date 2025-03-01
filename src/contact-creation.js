@@ -36,11 +36,11 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'media';
             break;
         case 'media':
-            message = 'Введи тип СМИ (например, деловые, лайфстайл)'
+            message = 'Введи тип СМИ (например, деловое, лайфстайл)'
             nextMode = 'media_type';
             break;
         case 'media_type':
-            message = 'Введи специализацию журналиста'
+            message = 'Введи профиль журналиста'
             nextMode = 'specialization';
             break;
         case 'specialization':

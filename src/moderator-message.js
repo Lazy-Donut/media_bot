@@ -8,7 +8,7 @@ const sendMessage = async (ctx) => {
         message: ctx.message.text,
     });
     await bot.api.sendMessage(process.env.MODERATOR_TG_ID, `Получено новое сообщение от ${ctx.from.first_name} @${ctx.from.username}: ${ctx.message.text}`);
-    await ctx.reply('Сообщение отправлено модератору');
+    await ctx.reply('Сообщение админу отправлено');
 }
 
 module.exports = {sendMessage};

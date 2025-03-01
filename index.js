@@ -70,7 +70,7 @@ const start = async () => {
         }
     })
 
-    bot.hears('Добавить новый контакт журналиста', async (ctx) => {
+    bot.hears('Добавить новый контакт', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             await ctx.reply(`Создание нового контакта`, {reply_markup: {remove_keyboard: true}})
             chats[ctx.chatId] = 'new_contact';
@@ -79,14 +79,14 @@ const start = async () => {
         }
     })
 
-    bot.hears('Поиск по специализации журналиста', async (ctx) => {
+    bot.hears('Поиск по профилю журналиста', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'specialization_search';
-            await ctx.reply('Введи специализацию журналиста')
+            await ctx.reply('Введи профиль журналиста')
         }
     })
 
-    bot.hears('Отправить сообщение модератору', async (ctx) => {
+    bot.hears('Отправить сообщение админу', async (ctx) => {
         if (await authorizationCheck(ctx) === true) {
             chats[ctx.chatId] = 'moderator_message';
             await ctx.reply('Введи текст сообщения')
