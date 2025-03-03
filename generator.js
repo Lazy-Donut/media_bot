@@ -20,6 +20,7 @@ const run = async () => {
     for (let i = 0; i < 10; i++) {
         const token = MD5(`${generateString(symbols)}`).toString();
         const dbToken = await TokenModel.create({token: token});
+        console.log(dbToken.token)
     }
     await sequelize.close();
 }
