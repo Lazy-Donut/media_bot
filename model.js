@@ -11,7 +11,7 @@ const UserModel = Sequelize.define('user', {
     first_name: {type: DataTypes.STRING, allowNull: true},
     last_name: {type: DataTypes.STRING, allowNull: true},
     id: {type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true},
-    telegram_id: {type: DataTypes.INTEGER, unique: true},
+    telegram_id: {type: DataTypes.BIGINT, unique: true},
     username: {type: DataTypes.STRING, allowNull: true},
 })
 
