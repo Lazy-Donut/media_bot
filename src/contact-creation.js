@@ -32,15 +32,15 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'last_name';
             break;
         case 'last_name':
-            message = 'Введи название СМИ'
+            message = 'Введи название СМИ (через запятую все варианты названия, например: Коммерсант, Коммерс)';
             nextMode = 'media';
             break;
         case 'media':
-            message = 'Введи тип СМИ (например, деловое, лайфстайл)'
+            message = 'Введи тип СМИ (например: бизнес, бизнесовые, деловые (во множественном числе), здесь же укажи город, если СМИ региональное)'
             nextMode = 'media_type';
             break;
         case 'media_type':
-            message = 'Введи профиль журналиста'
+            message = 'Введи профиль журналиста, например: финансы, экономические, инвестиционные. Чем больше синонимов, тем лучше'
             nextMode = 'specialization';
             break;
         case 'specialization':
@@ -60,7 +60,7 @@ const newContactMessage = async (ctx, mode = null) => {
             nextMode = 'telegram_username';
             break;
         case 'telegram_username':
-            message = 'Введи дополнительную информацию'
+            message = 'Введи дополнительную информацию: должность (главред), зона ответственности (логнриды, коммерция), дата последнего контакта (январь 2025)'
             nextMode = 'notes'
             break;
         case 'notes':
