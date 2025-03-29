@@ -1,12 +1,22 @@
 const { ContactModel } = require("../model");
+const sequelize = require("../db");
 
 async function deleteContact(ctx, contactId) {
   try {
-    const contact = await ContactModel.findByPk(contactId);
+    console.log(`Начинаем удаление контакта с ID: ${contactId}`);
+
+    const contact = await ContactModel.findOne({
+      where: { id: contactId },
+    });
     if (!contact) {
       throw new Error("Контакт не найден");
     }
-    await contact.destroy();
+
+    // Soft delete через прямой SQL-запрос
+    await sequelize.query(
+      `UPDATE contacts SET is_deleted = true, deleted_at = NOW(), deleted_by = ${ctx.from.id} WHERE id = ${contactId}`
+    );
+
     return true;
   } catch (error) {
     console.error("Ошибка при удалении контакта:", error);

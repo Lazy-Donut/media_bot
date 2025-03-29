@@ -24,28 +24,34 @@ const nameSearch = async (ctx) => {
     ctx,
     'SELECT * FROM contacts WHERE CONCAT(first_name, " ", COALESCE(last_name, "")) like "%' +
       ctx.msg.text +
-      '%"'
+      '%" AND is_deleted = false'
   );
 };
 
 const mediaSearch = async (ctx) => {
   await searchContacts(
     ctx,
-    'SELECT * FROM contacts WHERE media like "%' + ctx.msg.text + '%"'
+    'SELECT * FROM contacts WHERE media like "%' +
+      ctx.msg.text +
+      '%" AND is_deleted = false'
   );
 };
 
 const mediaTypeSearch = async (ctx) => {
   await searchContacts(
     ctx,
-    'SELECT * FROM contacts WHERE media_type like "%' + ctx.msg.text + '%"'
+    'SELECT * FROM contacts WHERE media_type like "%' +
+      ctx.msg.text +
+      '%" AND is_deleted = false'
   );
 };
 
 const specializationSearch = async (ctx) => {
   await searchContacts(
     ctx,
-    'SELECT * FROM contacts WHERE specialization like "%' + ctx.msg.text + '%"'
+    'SELECT * FROM contacts WHERE specialization like "%' +
+      ctx.msg.text +
+      '%" AND is_deleted = false'
   );
 };
 

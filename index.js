@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { Bot, GrammyError, HttpError } = require("grammy");
 const sequelize = require("./db");
+const { runMigrations } = require("./src/migrations");
 const bot = new Bot(process.env.BOT_API_KEY);
 const { processToken } = require("./src/services");
 const {
@@ -27,8 +28,14 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
+
+    // Run migrations
+    await runMigrations(sequelize.getQueryInterface());
+
+    console.log("База данных успешно подключена");
   } catch (e) {
-    console.log("Сбой подключения к ДБ", e);
+    console.error("Ошибка подключения к базе данных:", e);
+    process.exit(1);
   }
 
   bot.api.setMyCommands([
