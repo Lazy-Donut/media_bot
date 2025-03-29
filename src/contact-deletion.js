@@ -4,12 +4,12 @@ async function deleteContact(ctx, contactId) {
   try {
     const contact = await ContactModel.findByPk(contactId);
     if (!contact) {
-      throw new Error("Contact not found");
+      throw new Error("Контакт не найден");
     }
     await contact.destroy();
     return true;
   } catch (error) {
-    console.error("Error deleting contact:", error);
+    console.error("Ошибка при удалении контакта:", error);
     throw error;
   }
 }
@@ -17,7 +17,7 @@ async function deleteContact(ctx, contactId) {
 function createDeleteButton(contactId) {
   return {
     inline_keyboard: [
-      [{ text: "❌ Delete contact", callback_data: `delete_${contactId}` }],
+      [{ text: "❌ Удалить контакт", callback_data: `delete_${contactId}` }],
     ],
   };
 }
